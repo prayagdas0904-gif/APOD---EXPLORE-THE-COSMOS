@@ -485,22 +485,28 @@
     }
 
     @media (max-width: 680px) {
-      .wrap { width: min(100% - 28px, 1400px); padding-top: 20px; }
-      .nav { gap: 18px; font-size: 9px; letter-spacing: .14em; }
-      .nav a:first-child { display: none; }
-      .nasa-mark { width: 76px; }
-      .hero { margin-top: 128px; }
-      .hero h1 { font-size: 36px; letter-spacing: .1em; }
-      .hero .sub { font-size: 14px; }
-      .search-area { margin: 44px auto 64px; }
-      .search-control { grid-template-columns: 1fr; }
-      .date-field { border-right: 0; border-bottom: 1px solid var(--line); min-height: 74px; }
-      .random-btn {
-        min-height: 58px;
-        border-left: 0;
+
+    .search-control {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .date-field {
+        grid-column: 1 / -1;
+        border-right: 0;
         border-bottom: 1px solid var(--line);
-        min-width: 0;
-      }
+        min-height: 74px;
+    }
+
+    .view-btn {
+        min-height: 64px;
+        border-right: 1px solid var(--line);
+    }
+
+    .random-btn {
+        min-height: 64px;
+        border-left: 0;
+        border-bottom: 0;
+    }
       .view-btn { min-height: 64px; }
       .result-card { padding: 12px; border-radius: 14px; }
       .media, .media img, .media iframe { min-height: 310px; }
