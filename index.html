@@ -167,7 +167,7 @@
 
     .search-control {
       display: grid;
-      grid-template-columns: 1fr 190px;
+      grid-template-columns: minmax(0, 1fr) 190px 145px;
       min-height: 78px;
       border: 1px solid var(--line);
       border-radius: 12px;
@@ -246,6 +246,56 @@
     .view-btn:hover { background: rgba(255,255,255,.06); }
     .view-btn:disabled { opacity: .5; cursor: wait; }
     .view-btn span { font-size: 20px; margin-left: 10px; vertical-align: -2px; letter-spacing: 0; }
+
+    .random-btn {
+      border: 0;
+      border-left: 1px solid var(--line);
+      background: rgba(255,255,255,.02);
+      color: #f3f3f3;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      min-width: 145px;
+      padding: 0 16px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      transition: background .2s ease, color .2s ease;
+    }
+
+    .random-btn:hover {
+      background: rgba(255,255,255,.07);
+      color: #fff;
+    }
+
+    .random-btn:active {
+      background: rgba(255,255,255,.11);
+    }
+
+    .random-btn:focus-visible {
+      outline: 1px solid #fff;
+      outline-offset: -4px;
+    }
+
+    .random-label {
+      white-space: nowrap;
+    }
+
+
+    .shuffle-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 21px;
+      color: currentColor;
+    }
+
+    .shuffle-icon svg {
+      display: block;
+    }
 
     .availability {
       margin: 13px 0 0 1px;
@@ -437,6 +487,12 @@
       .search-area { margin: 44px auto 64px; }
       .search-control { grid-template-columns: 1fr; }
       .date-field { border-right: 0; border-bottom: 1px solid var(--line); min-height: 74px; }
+      .random-btn {
+        min-height: 58px;
+        border-left: 0;
+        border-bottom: 1px solid var(--line);
+        min-width: 0;
+      }
       .view-btn { min-height: 64px; }
       .result-card { padding: 12px; border-radius: 14px; }
       .media, .media img, .media iframe { min-height: 310px; }
@@ -544,7 +600,19 @@
               <input id="dateInput" type="date" min="1995-06-16" aria-label="Select an APOD date" />
             </div>
           </div>
-          <button id="searchButton" class="view-btn" type="button">View <span>→</span></button>
+<button id="searchButton" class="view-btn" type="button">View <span>→</span></button>
+          <button id="randomButton" class="random-btn" type="button" aria-label="Randomise date" title="Randomise">
+            <span class="shuffle-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 3h5v5"/>
+                <path d="M4 20L21 3"/>
+                <path d="M21 16v5h-5"/>
+                <path d="M15 15l6 6"/>
+                <path d="M4 4l5 5"/>
+              </svg>
+            </span>
+            <span class="random-label">Randomise</span>
+          </button>
         </div>
         <p id="availability" class="availability">Available from June 16, 1995 to today</p>
       </section>
@@ -581,6 +649,7 @@ Not affiliated with or endorsed by NASA.
 
     const dateInput = document.getElementById("dateInput");
     const searchButton = document.getElementById("searchButton");
+    const randomButton = document.getElementById("randomButton");
     const status = document.getElementById("status");
     const result = document.getElementById("result");
     const availability = document.getElementById("availability");
@@ -688,6 +757,19 @@ Not affiliated with or endorsed by NASA.
       }
     }
 
+    function randomDateBetween(startDate, endDate) {
+      const start = new Date(`${startDate}T00:00:00`).getTime();
+      const end = new Date(`${endDate}T00:00:00`).getTime();
+      const randomTime = start + Math.floor(Math.random() * (end - start + 1));
+      return new Date(randomTime).toISOString().slice(0, 10);
+    }
+
+    function randomise() {
+      const selectedDate = randomDateBetween(MIN_DATE, todayISO);
+      dateInput.value = selectedDate;
+      fetchApod(selectedDate);
+    }
+
     function search() {
       const selected = dateInput.value;
       if (!selected) return showError("Please choose a date.");
@@ -698,6 +780,7 @@ Not affiliated with or endorsed by NASA.
     }
 
     searchButton.addEventListener("click", search);
+    randomButton.addEventListener("click", randomise);
     dateInput.addEventListener("keydown", event => {
       if (event.key === "Enter") search();
     });
